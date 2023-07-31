@@ -29,11 +29,30 @@
             </div>
             <button type="submit" class="btn btn-success text-white">SIGN IN</button>
         </form>
-
-        <div id="card" class="bg-secondary p-4 my-4 rounded d-none">
-
-        </div>
     </div>
+        <div  class="my-4 rounded">
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Name</th>
+      <th scope="col">Email</th>
+      <th scope="col">message</th>
+      <th scope="col">delete</th>
+      <th scope="col">edit</th>
+    </tr>
+  </thead>
+  <tbody id="card">
+    <tr>
+        <td>banane</td>
+        <td>kdje@gmail</td>
+        <td>jkeoake,d</td>
+        <td><a href ="" id="delete" class="btn delete">delete</a></td>
+        <td><a id="edit" class="btn">edit</a></td>
+      </tr>
+    
+  </tbody>
+</table>
+        </div>
     <script src="index.js" type="module"></script>
     <script src="https://www.gstatic.com/firebasejs/10.1.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.1.0/firebase-firestore-compat.js"></script>

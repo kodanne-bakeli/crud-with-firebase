@@ -1,6 +1,6 @@
  // Import the functions you need from the SDKs you need
  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
- import { getFirestore, setDoc,doc,collection,addDoc } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-firestore.js";
+ import { getFirestore, setDoc,doc,collection,addDoc,updateDoc,deleteDoc,deleteField } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-firestore.js";
  // TODO: Add SDKs for Firebase products that you want to use
  // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -18,7 +18,7 @@
  // Initialize Firebase
  const app = initializeApp(firebaseConfig);
 
-const database = getFirestore(app)
+const database = getFirestore(app) 
 
 
 
@@ -26,15 +26,33 @@ const database = getFirestore(app)
  let name = document.getElementById('name')
  let email = document.getElementById('email')
  let message = document.getElementById('message')
+ let add = document.querySelector('#card')
  let submit = document.querySelector('.btn')
 // evenement sur submit
  submit.addEventListener("click", (e) => {
      e.preventDefault();
-    addDoc(collection(database, "users"), {
+   setDoc(doc(database, "users",name.value), {
         name: name.value,
         email: email.value,
         message:message.value 
       });
-      alert('vous avez ajouté un utilisateur')
-      
+      alert('succès');
+        add.innerHTML += `<tr>
+              <td>${name.value}</td>
+              <td>${email.value}</td>
+              <td>${message.value}</td>
+              <td><a href ="" id="delete" class="btn delete">delete</a></td>
+              <td><a id="edit">edit</a></td>
+            </tr>`
        })
+       
+        
+      
+         let delets = document.querySelectorAll('.delete')
+         for(let delet of delets)
+        {
+          delet.addEventListener("click", (e) => {
+         e.preventDefault();
+         deleteDoc(doc(database, "users"));
+         })
+      }
