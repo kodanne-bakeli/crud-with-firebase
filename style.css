@@ -1,0 +1,25 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&display=swap');
+body{
+    font-family: 'Playfair Display', serif;
+}
+.add-post,#card{
+    max-width: 500px;
+    margin: auto;
+}
+.loader {
+    border: 9px solid #f3f3f3; /* Light grey */
+    border-top: 9px solid #3498db; /* Blue */
+    border-radius: 50%;
+    width: 5px;
+    height: 5px;
+    animation: spin 2s linear infinite;
+ }
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.hidden{
+display:none;
+}
