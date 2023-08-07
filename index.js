@@ -1,24 +1,11 @@
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
-import { getFirestore, setDoc, doc, collection, addDoc, updateDoc, deleteDoc, deleteField } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-firestore.js";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyCF0_Sn4Rwh4d4zY7-RcDgWjIJYi94MEoU",
-  authDomain: "crud-with-firebase-4b261.firebaseapp.com",
-  databaseURL: "https://crud-with-firebase-4b261-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "crud-with-firebase-4b261",
-  storageBucket: "crud-with-firebase-4b261.appspot.com",
-  messagingSenderId: "401646212235",
-  appId: "1:401646212235:web:5162a3bb326516cb32708e"
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-
-const database = getFirestore(app)
+import {
+  onGetTasks,
+  addTask,
+  deleteTask,
+  getTask,
+  updateTask,
+  getTasks,
+} from "./firebase.js";
 
 
 
@@ -28,56 +15,100 @@ let email = document.getElementById('email')
 let message = document.getElementById('message')
 let add = document.querySelector('#card')
 let submit = document.querySelector('.btn')
-// evenement sur submit
-submit.addEventListener("click", (e) => {
-  e.preventDefault();
-  setDoc(doc(database, "users", name.value), {
-    name: name.value,
-    email: email.value,
-    message: message.value
-  });
-  alert('succès');
-  add.innerHTML += `<tr>
-              <td class="names">${name.value}</td>
-              <td class="emails">${email.value}</td>
-              <td class="messages">${message.value}</td>
-              <td><a id="delete" class="btn delete">delete</a></td>
-              <td><a id="edit" class="btn edit">edit</a></td>
-            </tr>`
-  name.value = ""
-  email.value = ""
-  message.value = ""
-})
+let form = document.querySelector(".add-post")
 
 
-card.addEventListener('click', () => {
-  let parent = event.target.parentElement.parentElement;
-  let edit = event.target.id == "edit"
-  let delet = event.target.id == "delete"
-  if (delet) {
-    let namel = parent.querySelector('.names').parentElement
-    console.log(namel)
-    deleteDoc(doc(database, "users",namel))
-  }
+
+let editStatus = false;
+let id = "";
+
+window.addEventListener("DOMContentLoaded", async (e) => {
 
 
-  if (edit) {
-    let parent = event.target.parentElement.parentElement;
-    console.log(parent)
-    let namel = parent.querySelector('.names').innerText
-    let emaill = parent.querySelector('.emails').innerText
-    let messagel = parent.querySelector('.messages').innerText
-    name.value = namel
-    email.value = emaill
-    message.value = messagel
-    submit.addEventListener("click", (e) => {
-      e.preventDefault()
-      updateDoc(doc(database, "users", name.value), {
-        name: name.value,
-        email: email.value,
-        message: message.value
-      })
+  onGetTasks((querySnapshot) => {
+    add.innerHTML = "";
+
+    querySnapshot.forEach((doc) => {
+      const user = doc.data();
+
+      add.innerHTML += `
+      <div class="card card-body mt-2 border-primary">
+    <h3 class="h5">${user.name}</h3>
+    <h3 class="h5">${user.email}</h3>
+    <p>${user.message}</p>
+    <div>
+      <button class="btn btn-primary delete" data-id="${doc.id}">
+         Delete
+      </button>
+      <button class="btn btn-secondary edit" data-id="${doc.id}">
+        Edit
+      </button>
+    </div>
+  </div>`;
     });
-  }
+// FONCTION POUR SUPPRIMER
 
-})
+    const btnsDelete = add.querySelectorAll(".delete");
+    btnsDelete.forEach((btn) =>
+      btn.addEventListener("click", async ({ target: { dataset } }) => {
+        try {
+          await deleteTask(dataset.id);
+        } catch (error) {
+          console.log(error);
+        }
+      })
+    );
+
+// FONCTION POUR METTRE A JOUR
+
+    const btnsEdit = add.querySelectorAll(".edit");
+    btnsEdit.forEach((btn) => {
+      btn.addEventListener("click", async (e) => {
+        try {
+          const doc = await getTask(e.target.dataset.id);
+          const user = doc.data();
+          name.value = user.name;
+          email.value = user.email;
+          message.value = user.message;
+          
+          editStatus = true;
+          id = doc.id;
+          submit.innerText = "Update";
+        } catch (error) {
+          console.log(error);
+        }
+      });
+    });
+  });
+});
+
+// FONCTION POUR AJOUTER
+
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const namel = name;
+  const emaill = email;
+  const messagel = message;
+
+  try {
+    if (!editStatus) {
+      await addTask(namel.value, emaill.value, messagel.value);
+    } else {
+      await updateTask(id, {
+        name: namel.value,
+        email: emaill.value,
+        message: messagel.value,
+      });
+
+      editStatus = false;
+      id = "";
+      submit.innerText = "Save";
+    }
+
+    form.reset();
+    name.focus();
+  } catch (error) {
+    console.log(error);
+  }
+});
