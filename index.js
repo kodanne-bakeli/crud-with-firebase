@@ -107,17 +107,18 @@ form.addEventListener("submit", async (e) => {
   if(namel.value==="" && emaill.value==="" && messagel.value===""){
     alert("veuillez entrer des données")
   }else{ 
-  //        submit.addEventListener("click", () => {
-  //    loader.classList.remove("hidden")
-  //    span.classList.add("hidden")
-  //    submit.setAttribute("disabled", "")
-  //    setTimeout(() => {
-  //      loader.classList.add("hidden")
-  //      span.classList.remove("hidden")
-  //      submit.removeAttribute("disabled")
-  //    }, 3000);
-  //  })
-    await addTask(namel.value, emaill.value, messagel.value);
+          
+     loader.classList.remove("hidden")
+     span.classList.add("hidden")
+     submit.setAttribute("disabled", "")
+     setTimeout( () => {
+      loader.classList.add("hidden");
+      span.classList.remove("hidden");
+      submit.removeAttribute("disabled");
+    }, 1000);
+     
+      await addTask(namel.value, emaill.value, messagel.value);
+     
   }
       
       
